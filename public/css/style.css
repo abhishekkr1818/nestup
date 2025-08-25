@@ -50,7 +50,6 @@ body{
 
 .f-info {
     height: 8rem;
-    background-color: #ebebeb;
     text-align: center;
     display: flex;
     flex-wrap: wrap;
@@ -87,10 +86,10 @@ body{
     opacity: 0;
 }
 
-.card-img-overlay:hover {
+/* .card-img-overlay:hover {
     opacity: 0.2;
     background-color: white;
-}
+} */
 
 .add-btn{
     background-color: red !important;
@@ -122,3 +121,105 @@ body{
     height: 400px;
     width: 120vh; 
 }
+
+/* Default (Light Mode) stays as Bootstrap + your styles */
+
+/* 🌙 DARK MODE STYLES */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Navbar */
+body.dark-mode .navbar {
+  background-color: #1f1f1f !important;
+}
+
+body.dark-mode .navbar .nav-link,
+body.dark-mode .navbar .navbar-brand {
+  color: #ffffff !important;
+}
+
+body.dark-mode .navbar .nav-link:hover {
+  color: #e50914 !important;
+}
+
+/* Footer */
+body.dark-mode footer {
+  background-color: #1f1f1f;
+  color: #fff;
+}
+body.dark-mode footer a {
+  color: #fff;
+}
+body.dark-mode footer a:hover {
+  color: #e50914;
+}
+
+/* Cards / Containers */
+body.dark-mode .card {
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+/* Forms */
+body.dark-mode .form-control {
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+}
+body.dark-mode .form-control::placeholder {
+  color: #bbb;
+}
+
+/* Buttons */
+body.dark-mode .btn-primary,
+body.dark-mode .search-btn {
+  background-color: #e50914;
+  border: none;
+  color: #ffffff;
+}
+body.dark-mode .btn-primary:hover,
+body.dark-mode .search-btn:hover {
+  background-color: #b0060f;
+}
+
+/* Remove default bottom border / line from navbar */
+.navbar {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Light mode nav links */
+.navbar .nav-link {
+  color: #222 !important;
+  transition: color 0.3s ease;
+}
+
+/* Dark mode nav links */
+body.dark-mode .navbar .nav-link {
+  color: #ffffff !important;
+}
+
+body.dark-mode .navbar .nav-link:hover {
+  color: #e50914 !important;
+}
+
+/* Dark mode brand */
+body.dark-mode .navbar .navbar-brand b {
+  color: #ffffff !important;
+}
+
+/* Theme toggle button */
+#themeToggle {
+  background: transparent !important;
+  border: none !important;
+  color: #222 !important;
+}
+
+body.dark-mode #themeToggle {
+  color: #ffffff !important;
+}
+
