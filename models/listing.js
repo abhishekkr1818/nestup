@@ -29,6 +29,16 @@ const Review=require("./review")
 // const Listing = mongoose.model("Listing", listingSchema);
 // module.exports = Listing;
 
+const CATEGORY_OPTIONS = [
+  "Rooms",
+  "Iconic cities",
+  "Mountains",
+  "Castles",
+  "Amazing pools",
+  "Camping",
+  "Farms"
+];
+
 const listingSchema = new Schema({
   title: {
     type: String,
@@ -62,7 +72,13 @@ const listingSchema = new Schema({
       type: [Number],
       required: true
     }
-  }
+  },
+  category: {
+  type: String,
+  enum: CATEGORY_OPTIONS,
+  required: true,
+  default: "Rooms"
+}
 });
 
 listingSchema.post("findOneAndDelete", async (listing)=>{

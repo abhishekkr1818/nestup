@@ -1,0 +1,14 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="row mt-5">
+  <div class="col-6 offset-3">
+    <h3>Booking for: <%= listing.title %></h3>
+    <p>Base Price: ₹<%= listing.price.toLocaleString("en-IN") %></p>
+    <p>Taxes (18%): ₹<%= tax %></p>
+    <h4>Total: ₹<%= total %></h4>
+
+    <form action="/listings/<%= listing._id %>/book" method="POST">
+      <button class="btn btn-success">Confirm & Pay</button>
+    </form>
+  </div>
+</div>

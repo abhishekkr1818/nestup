@@ -1,0 +1,15 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="container mt-5 text-center">
+  <h3>🎉 Booking Confirmed!</h3>
+  <p>You’re all set for <b><%= booking.listing.title %></b>.</p>
+  <p>
+    <small>
+      <%= new Date(booking.checkIn).toLocaleDateString() %> → 
+      <%= new Date(booking.checkOut).toLocaleDateString() %> • 
+      Guests: <%= booking.guests %>
+    </small>
+  </p>
+  <p class="mt-3"><b>Total Paid:</b> ₹<%= booking.total.toLocaleString("en-IN") %> (incl. 18% GST)</p>
+  <a class="btn btn-primary mt-2" href="/listings/<%= booking.listing._id %>">Back to listing</a>
+</div>

@@ -3,10 +3,10 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken= process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
-module.exports.index=async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
-}
+// module.exports.index=async (req, res) => {
+//   const allListings = await Listing.find({});
+//   res.render("listings/index.ejs", { allListings });
+// }
 
 module.exports.renderNewForm=(req, res) => {
   res.render("listings/new.ejs");
@@ -87,3 +87,49 @@ module.exports.destroyListing=async (req, res) => {
   req.flash("success", "Listing deleted")
   res.redirect("/listings");
 }
+
+// controllers/listings.js
+module.exports.index = async (req, res) => {
+  const searchQuery = (req.query.search || "").trim();
+  const selectedCategory = (req.query.category || "").trim();
+
+  const filter = {};
+
+  if (searchQuery) {
+    filter.$or = [
+      { title: { $regex: searchQuery, $options: "i" } },
+      { location: { $regex: searchQuery, $options: "i" } }
+    ];
+  }
+
+  if (selectedCategory) {
+    filter.category = selectedCategory;
+  }
+
+  const listings = await Listing.find(filter);
+
+  res.render("listings/index.ejs", {
+    listings,
+    searchQuery,
+    selectedCategory
+  });
+};
+
+
+module.exports.suggestions = async (req, res) => {
+  const q = (req.query.q || "").trim();
+  if (!q) return res.json([]);
+
+  const suggestions = await Listing.find({
+    $or: [
+      { title: { $regex: q, $options: "i" } },
+      { location: { $regex: q, $options: "i" } },
+      { country: { $regex: q, $options: "i" } }
+    ]
+  })
+    .limit(7)
+    .select("title location") // _id present by default
+    .lean();
+
+  res.json(suggestions);
+};

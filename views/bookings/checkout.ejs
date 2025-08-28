@@ -1,0 +1,52 @@
+<% layout("/layouts/boilerplate") -%>
+
+<div class="container mt-4">
+  <h3>Confirm & Pay</h3>
+
+  <div class="row mt-3">
+    <div class="col-md-7">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5><%= booking.listing.title %></h5>
+          <p class="mb-1"><%= booking.listing.location %></p>
+          <small>From: <%= new Date(booking.checkIn).toLocaleDateString() %> 
+            → To: <%= new Date(booking.checkOut).toLocaleDateString() %></small><br>
+          <small>Guests: <%= booking.guests %></small>
+        </div>
+      </div>
+
+      <!-- (Optional) collect basic payer details here -->
+      <div class="card">
+        <div class="card-body">
+          <h6>Payment method</h6>
+          <p class="text-muted mb-2">Demo mode – no real charge.</p>
+          <form action="/bookings/<%= booking._id %>/pay" method="POST">
+            <button class="btn btn-success">Confirm & Pay</button>
+            <a href="/listings/<%= booking.listing._id %>" class="btn btn-outline-secondary ms-2">Back</a>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <h6>Price summary</h6>
+          <div class="d-flex justify-content-between">
+            <span>₹<%= booking.pricePerNight.toLocaleString("en-IN") %> × <%= booking.nights %> night(s)</span>
+            <span>₹<%= booking.subtotal.toLocaleString("en-IN") %></span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>GST (18%)</span>
+            <span>₹<%= booking.tax.toLocaleString("en-IN") %></span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total</span>
+            <span>₹<%= booking.total.toLocaleString("en-IN") %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

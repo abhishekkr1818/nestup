@@ -37,4 +37,13 @@ router.route("/:id")
 // //Edit Route
 router.get("/:id/edit",isLoggedIn,isOwner, listingController.renderEditForm);
 
+router.route("/")
+  .get(wrapAsync(listingController.index))
+  .post(
+    isLoggedIn,
+    upload.single('listing[image]'),
+    validateListing,
+    wrapAsync(listingController.createListing)
+  );
+
 module.exports=router
