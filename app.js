@@ -16,6 +16,11 @@ const passport=require("passport")
 const LocalStrategy=require("passport-local")
 const User=require("./models/user.js")
 
+app.use((req, res, next) => {
+  res.locals.mapApiKey = process.env.GOOGLE_MAPS_API_KEY;
+  next();
+});
+
 //ROUTES
 const listingRouter=require("./routes/listing.js")
 const reviewRouter=require("./routes/review.js")

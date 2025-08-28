@@ -28,23 +28,22 @@
         </div>
 
         <div class="mb-3">
-        <label for="category" class="form-label">Category</label>
-        <select
-          id="category"
-          name="listing[category]"
-          class="form-select"
-          required
-        >
-          <option value="" disabled selected><%= listing.category %></option>
-          <option value="Rooms">Rooms</option>
-          <option value="Iconic cities">Iconic cities</option>
-          <option value="Mountains">Mountains</option>
-          <option value="Castles">Castles</option>
-          <option value="Amazing pools">Amazing pools</option>
-          <option value="Camping">Camping</option>
-          <option value="Farms">Farms</option>
-        </select>
-      </div>
+  <label for="category" class="form-label">Category</label>
+  <select
+    id="category"
+    name="listing[category]"
+    class="form-select"
+    required
+  >
+    <option value="" disabled>Select a category</option>
+    <% categories.forEach(function(category) { %>
+      <option value="<%= category %>" <%= listing.category === category ? "selected" : "" %>>
+        <%= category %>
+      </option>
+    <% }) %>
+  </select>
+</div>
+
 
         <div class="row">
             <div class="mb-3 col-md-4">

@@ -180,8 +180,17 @@
 
   <div class="col-12 col-md-6 offset-md-3 mb-3">
     <h3>Where you'll be</h3>
-    <div id="map"></div>
+    <div id="map" style="height: 400px; width: 100%;"></div>
+
   </div>
 </div>
 
+<script>
+  window.listingData = <%- JSON.stringify(listing) %>;
+</script>
+
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=<%= mapApiKey %>&callback=initMap">
+</script>
 <script src="/js/map.js"></script>
