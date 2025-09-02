@@ -1,4 +1,5 @@
 <style>
+
   .search-btn {
     background-color: red;
     color: #fff;
@@ -37,7 +38,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <div class="navbar-nav">
         <a class="nav-link" href="/listings"
-          ><b style="color: red">RaahiNest</b></a
+          ><b style="color: red">NestUp</b></a
         >
       </div>
 
@@ -54,18 +55,43 @@
         </form>
       </div> -->
 
-      <div class="navbar-nav ms-auto">
-        <button class="btn btn-sm ms-3" id="themeToggle">
-          <i class="fa-solid fa-moon"></i>
-        </button>
-        <a class="nav-link" href="/listings/new">Airbnb your home</a>
-        <% if(!currUser){ %>
-        <a class="nav-link" href="/signup"><b>Signup</b></a>
-        <a class="nav-link" href="/login"><b>Login</b></a>
-        <%} %> <% if(currUser) { %>
-        <a class="nav-link" href="/logout"><b>Logout</b></a>
-        <% } %>
-      </div>
+<div class="navbar-nav ms-auto">
+  <button class="btn btn-sm" id="themeToggle">
+    <i class="fa-solid fa-moon"></i>
+  </button>
+  <a class="nav-link" href="/listings/new">Airbnb your home</a>
+
+  <% if(!currUser){ %>
+    <a class="nav-link" href="/signup"><b>Signup</b></a>
+    <a class="nav-link" href="/login"><b>Login</b></a>
+  <% } %>
+
+  <% if(currUser) { %>
+    <div class="nav-item dropdown">
+      <a
+        href="#"
+        id="userDropdown"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <img
+          src="<%= currUser.avatar %>"
+          alt="user"
+          class="rounded-circle"
+          style="width: 35px; height: 35px; border: 2px solid limegreen; cursor:pointer;"
+        />
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+        <li><span class="dropdown-item-text">Hi, <%= currUser.username %></span></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="/logout">Log out!</a></li>
+      </ul>
+    </div>
+  <% } %>
+</div>
+
+
     </div>
   </div>
 </nav>

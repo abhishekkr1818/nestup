@@ -1,6 +1,6 @@
-# 🏡 RaahiNest – MERN-based Airbnb
+# 🏡 NestUp – MERN-based Airbnb
 
-RaahiNest is a full-stack web application inspired by Airbnb, built using the MERN stack with server-side rendering via EJS. It allows users to browse, post, review, and manage travel accommodations.
+NestUp is a full-stack web application inspired by Airbnb, built using the MERN stack with server-side rendering via EJS. It allows users to browse, post, review, and manage travel accommodations.
 
 ### ✅ Core Functionality
 - 🔍 Browse all listings

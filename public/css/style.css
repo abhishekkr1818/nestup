@@ -15,6 +15,12 @@ body{
     background-color: white;
 }
 
+.navbar-nav.ms-auto {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* spacing between themeToggle, Airbnb button, and profile */
+}
+
 .fa-compass{
     color: red;
     font-size: 2rem;
@@ -132,12 +138,12 @@ body.dark-mode {
 }
 
 /* Navbar */
-body.dark-mode .navbar {
+body.dark-mode .navbar  {
   background-color: #1f1f1f !important;
 }
 
 body.dark-mode .navbar .nav-link,
-body.dark-mode .navbar .navbar-brand {
+body.dark-mode .navbar .navbar-brand  {
   color: #ffffff !important;
 }
 
