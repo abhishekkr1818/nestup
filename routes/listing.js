@@ -24,6 +24,30 @@ router.route("/")
 //New Route
 router.get("/new",isLoggedIn, listingController.renderNewForm);
 
+// /listings/suggestions (must be above /:id)
+router.get("/suggestions", async (req, res) => {
+  const q = req.query.q || "";
+  if (!q.trim()) return res.json([]);
+
+  const regex = new RegExp(q, "i");
+  const listings = await Listing.find({
+    $or: [
+      { title: regex },
+      { location: regex }
+    ]
+  }).limit(5);
+
+  res.json(
+    listings.map(l => ({
+      id: l._id,
+      title: l.title,
+      location: l.location,
+      description: l.description,
+      author: l.owner?.username || "Unknown"
+    }))
+  );
+});
+
 
 //Show Route
 //Update Route 
@@ -45,5 +69,8 @@ router.route("/")
     validateListing,
     wrapAsync(listingController.createListing)
   );
+
+
+
 
 module.exports=router

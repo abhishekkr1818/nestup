@@ -1,6 +1,7 @@
 <% layout("/layouts/boilerplate") -%>
 
 <style>
+  /* Filters Layout */
   #filters {
     display: flex;
     flex-wrap: wrap;
@@ -42,44 +43,138 @@
     margin-top: 1rem;
   }
 
-  /* Search bar shorter */
-  #searchInput {
-  width: 100%;       /* make it fluid */
-  max-width: 900px;  /* keep the desktop limit */
-}
+  /* Dark mode filter colors */
+  body.dark-mode .filter {
+    color: #fff; /* white filters */
+  }
+  body.dark-mode .filter.active {
+    color: #ff4757; /* highlight active in red/pink */
+    font-weight: 700;
+  }
 
-
-  /* Add padding around cards grid */
+  /* Listings Container */
   .listings-container {
     padding: 0 0.5rem; /* left & right padding */
   }
 
-  /* Dark mode filter colors */
-body.dark-mode .filter {
-  color: #fff; /* white filters */
-}
+  /* Search Container */
+  .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+  }
 
-body.dark-mode .filter.active {
-  color: #ff4757; /* highlight active in red/pink */
-  font-weight: 700;
-}
+  #searchForm {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;   /* allow wrapping on small screens */
+    gap: 0.5rem;       /* space between input and button */
+    border-bottom: none !important;
+    width: 100%;
+  }
 
-.search-container {
-  position: relative;
-  width: 300px;
-}
+  .search-wrap {
+    flex: 1;           /* input takes remaining space */
+  }
 
-#searchForm {
-  flex-wrap: wrap;   /* allow wrapping on small screens */
-  gap: 0.5rem;       /* space between input and button */
-}
+  /* Search Input */
+  #searchInput {
+    width: 100%;
+    max-width: 900px;  /* keep desktop limit */
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: none !important;
+  }
+  #searchInput:focus {
+    border: 1px solid #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5) !important;
+  }
 
-/* Ensure search container grows on mobile */
-.search-wrap {
-  flex: 1;           /* take remaining space */
-}
+  /* Search Button */
+  #searchForm button {
+    padding: 10px 18px;
+    border-radius: 25px;
+    border: none;
+    background: #f20606;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    flex-shrink: 0; /* don’t shrink */
+  }
+  #searchForm button:hover {
+    background: #0056b3;
+  }
+  @media (max-width: 480px) {
+    #searchForm button {
+      width: 100%; /* full width on small screens */
+    }
+  }
 
+  /* Suggestions Box Styling */
+  #suggestionsBox {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+    margin-top: 6px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  body.dark-mode #suggestionsBox {
+    background: #1e1e1e;
+    border: 1px solid #333;
+  }
+
+  .suggestion-item {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    transition: background 0.2s;
+    text-decoration: none;
+  }
+  body.dark-mode .suggestion-item {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .suggestion-item:hover {
+    background: rgba(0,0,0,0.05);
+  }
+  body.dark-mode .suggestion-item:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .suggestion-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #222;
+  }
+  body.dark-mode .suggestion-title {
+    color: #fff;
+  }
+
+  .suggestion-subtitle {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  body.dark-mode .suggestion-subtitle {
+    color: #aaa;
+  }
+
+  .suggestion-owner {
+    font-size: 0.85rem;
+    color: #888;
+  }
+  body.dark-mode .suggestion-owner {
+    color: #ccc;
+  }
 </style>
+
 
 <div id="filters">
   <div class="filters-left">
@@ -209,5 +304,41 @@ body.dark-mode .filter.active {
       }
     }
   });
+
+  const searchInput = document.getElementById("searchInput");
+const suggestionsBox = document.getElementById("suggestionsBox");
+
+searchInput.addEventListener("input", async () => {
+  const query = searchInput.value.trim();
+  if (!query) {
+    suggestionsBox.innerHTML = "";
+    return;
+  }
+
+  const res = await fetch(`/listings/suggestions?q=${encodeURIComponent(query)}`);
+  const data = await res.json();
+
+suggestionsBox.innerHTML = data.map(item => `
+  <a href="/listings/${item.id}" class="suggestion-item">
+    <div class="suggestion-title">${item.title}</div>
+    <div class="suggestion-subtitle">${item.description || "No description"}</div>
+  </a>
+`).join("");
+
+
+});
+
+// Keep existing search form submit behavior
+document.getElementById("searchForm").addEventListener("submit", (e) => {
+  // Do NOT block submit → let it go to /listings/search?q=...
+  suggestionsBox.innerHTML = "";
+});
+
+// Hide suggestions when clicking outside
+document.addEventListener("click", (e) => {
+  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+    suggestionsBox.innerHTML = "";
+  }
+});
   
 </script>

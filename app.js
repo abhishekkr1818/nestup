@@ -2,6 +2,7 @@ if(process.env.NODE_ENV != "production"){
   require('dotenv').config();
 }
 
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -81,6 +82,43 @@ app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
+
+// Google strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,   // add these in .env
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:8080/auth/google/callback"
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await User.findOne({ googleId: profile.id });
+
+if (!user) {
+  // Check if email already exists (manual signup case)
+  user = await User.findOne({ email: profile.emails[0].value });
+
+  if (user) {
+    // Attach Google ID to existing account
+    user.googleId = profile.id;
+    await user.save();
+  } else {
+    // New Google user
+    user = new User({
+      username: profile.displayName,
+      email: profile.emails[0].value,
+      googleId: profile.id
+    });
+    await user.save();
+  }
+}
+
+
+      return done(null, user);
+    } catch (err) {
+      return done(err, null);
+    }
+  }
+));
 
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())

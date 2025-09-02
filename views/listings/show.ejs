@@ -75,7 +75,7 @@
   </div>
 
   <div class="col-8 offset-3 mb-3">
-    <% if(currUser) {%>
+      <% if (currUser && currUser._id.toString() !== listing.owner._id.toString()) { %>
     <hr />
     <h4>Leave a review</h4>
     <br />
@@ -150,7 +150,11 @@
       <button class="btn btn-success">Submit</button>
     </form>
     <hr />
-    <% } %> <% if(listing.reviews.length > 0) { %>
+    <% } %> 
+  </div>
+
+    <div class="col-8 offset-3 mb-3">
+  <% if(listing.reviews.length > 0) { %>
     <div class="row">
       <p><b>All Reviews</b></p>
       <% for(review of listing.reviews){ %>
@@ -176,7 +180,7 @@
       <% } %>
     </div>
     <% } %>
-  </div>
+    </div>
 
   <div class="col-12 col-md-6 offset-md-3 mb-3">
     <h3>Where you'll be</h3>
