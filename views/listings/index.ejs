@@ -8,7 +8,8 @@
     align-items: center;
     justify-content: space-between; /* space filters & toggle */
     margin-bottom: 1rem;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: none !important; /* ensure no line */
   }
 
   .filters-left {
@@ -23,7 +24,7 @@
     margin-top: 1rem;
     opacity: 0.7;
     text-decoration: none;
-    color: black; /* make filters black */
+    color: black;
   }
   .filter:hover {
     opacity: 1;
@@ -32,7 +33,7 @@
   .filter.active {
     opacity: 1;
     font-weight: 700;
-    color: black; /* active also black */
+    color: black;
   }
   .filter p {
     font-size: 0.8rem;
@@ -45,43 +46,44 @@
 
   /* Dark mode filter colors */
   body.dark-mode .filter {
-    color: #fff; /* white filters */
+    color: #fff;
   }
   body.dark-mode .filter.active {
-    color: #ff4757; /* highlight active in red/pink */
+    color: #ff4757;
     font-weight: 700;
   }
 
   /* Listings Container */
   .listings-container {
-    padding: 0 0.5rem; /* left & right padding */
+    padding: 0 0.5rem;
+    margin-top: 2rem; /* gap between search bar and listings */
   }
 
   /* Search Container */
   .search-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
-    margin: auto;
+    max-width: 600px;
+    margin: 2rem auto; /* spacing above/below */
   }
 
   #searchForm {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;   /* allow wrapping on small screens */
-    gap: 0.5rem;       /* space between input and button */
-    border-bottom: none !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border: none !important;
+    box-shadow: none !important;
     width: 100%;
   }
 
   .search-wrap {
-    flex: 1;           /* input takes remaining space */
+    flex: 1;
   }
 
   /* Search Input */
   #searchInput {
     width: 100%;
-    max-width: 900px;  /* keep desktop limit */
     padding: 10px 15px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -105,14 +107,14 @@
     font-size: 16px;
     cursor: pointer;
     transition: 0.3s ease;
-    flex-shrink: 0; /* don’t shrink */
+    flex-shrink: 0;
   }
   #searchForm button:hover {
     background: #0056b3;
   }
   @media (max-width: 480px) {
     #searchForm button {
-      width: 100%; /* full width on small screens */
+      width: 100%;
     }
   }
 
@@ -138,6 +140,7 @@
     border-bottom: 1px solid rgba(0,0,0,0.08);
     transition: background 0.2s;
     text-decoration: none;
+    color: inherit;
   }
   body.dark-mode .suggestion-item {
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -173,6 +176,10 @@
   body.dark-mode .suggestion-owner {
     color: #ccc;
   }
+  #searchForm {
+  border-bottom: none !important;
+}
+
 </style>
 
 
@@ -221,29 +228,28 @@
   </div>
 </div>
 
-<!-- Search form: preserve category if set -->
-<form id="searchForm" action="/listings" method="GET" 
-      class="d-flex align-items-center mb-3 flex-wrap gap-2">
-  
-  <div class="search-wrap flex-grow-1 position-relative">
-    <input
-      id="searchInput"
-      name="search"
-      value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
-      class="form-control"
-      placeholder="Search listings..."
-      autocomplete="off"
-    />
-    <div id="suggestionsBox" class="list-group position-absolute w-100" 
-         style="z-index: 1000;"></div>
-  </div>
+<!-- Search form -->
+<div class="search-container">
+  <form id="searchForm" action="/listings" method="GET">
+    <div class="search-wrap position-relative">
+      <input
+        id="searchInput"
+        name="search"
+        value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+        class="form-control"
+        placeholder="Search listings..."
+        autocomplete="off"
+      />
+      <div id="suggestionsBox" class="list-group position-absolute w-100" style="z-index: 1000;"></div>
+    </div>
 
-  <% if (selectedCategory) { %>
-    <input type="hidden" name="category" value="<%= selectedCategory %>">
-  <% } %>
+    <% if (selectedCategory) { %>
+      <input type="hidden" name="category" value="<%= selectedCategory %>">
+    <% } %>
 
-  <button class="btn btn-primary" type="submit">Search</button>
-</form>
+    <button class="btn btn-primary" type="submit">Search</button>
+  </form>
+</div>
 
 
 <!-- Cards -->
@@ -306,39 +312,33 @@
   });
 
   const searchInput = document.getElementById("searchInput");
-const suggestionsBox = document.getElementById("suggestionsBox");
+  const suggestionsBox = document.getElementById("suggestionsBox");
 
-searchInput.addEventListener("input", async () => {
-  const query = searchInput.value.trim();
-  if (!query) {
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+    if (!query) {
+      suggestionsBox.innerHTML = "";
+      return;
+    }
+
+    const res = await fetch(`/listings/suggestions?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    suggestionsBox.innerHTML = data.map(item => `
+      <a href="/listings/${item.id}" class="suggestion-item">
+        <div class="suggestion-title">${item.title}</div>
+        <div class="suggestion-subtitle">${item.location || "No location"}</div>
+      </a>
+    `).join("");
+  });
+
+  document.getElementById("searchForm").addEventListener("submit", () => {
     suggestionsBox.innerHTML = "";
-    return;
-  }
+  });
 
-  const res = await fetch(`/listings/suggestions?q=${encodeURIComponent(query)}`);
-  const data = await res.json();
-
-suggestionsBox.innerHTML = data.map(item => `
-  <a href="/listings/${item.id}" class="suggestion-item">
-    <div class="suggestion-title">${item.title}</div>
-    <div class="suggestion-subtitle">${item.description || "No description"}</div>
-  </a>
-`).join("");
-
-
-});
-
-// Keep existing search form submit behavior
-document.getElementById("searchForm").addEventListener("submit", (e) => {
-  // Do NOT block submit → let it go to /listings/search?q=...
-  suggestionsBox.innerHTML = "";
-});
-
-// Hide suggestions when clicking outside
-document.addEventListener("click", (e) => {
-  if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-    suggestionsBox.innerHTML = "";
-  }
-});
-  
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+      suggestionsBox.innerHTML = "";
+    }
+  });
 </script>

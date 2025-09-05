@@ -64,38 +64,83 @@ body{
 }
 
 /* Cards */
-.listing-card{
-    border: none !important;
-    margin-bottom: 2rem;
+.listing-card {
+  border: none !important;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.card-img-top{
-    border-radius: 1rem !important;
-    width: 100%;
-    object-fit: cover !important;
+/* Light/Dark Theme Background */
+:root {
+  --card-bg: #f9f9f9;   /* light mode card */
+  --card-gradient: linear-gradient(135deg, #ff6a00, #ee0979);
 }
 
-.card-body{
-    padding: 0 !important;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: #1e1e1e;  /* dark mode card */
+    --card-gradient: linear-gradient(135deg, #1a73e8, #9c27b0);
+  }
 }
 
-.card-text p{
-    font-weight: 400 !important;
+.card-img-top {
+  border-radius: 1rem 1rem 0 0 !important;
+  width: 100%;
+  object-fit: cover !important;
 }
 
-.listing-link{
-    text-decoration: none;
+.card-body {
+  padding: 1rem !important;
 }
 
-/* Card Effect */
-.card-img-overlay {
-    opacity: 0;
+.card-text p {
+  font-weight: 400 !important;
 }
 
-/* .card-img-overlay:hover {
-    opacity: 0.2;
-    background-color: white;
-} */
+.listing-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Hover Effect: Lift + Gradient Border */
+.listing-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 2px; /* thickness of gradient border */
+  background: var(--card-gradient);
+
+  /* Masking (standard + webkit for Safari/Chrome) */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.listing-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.listing-card:hover::before {
+  opacity: 1;
+}
+
 
 .add-btn{
     background-color: red !important;
@@ -194,6 +239,7 @@ body.dark-mode .search-btn:hover {
 
 /* Remove default bottom border / line from navbar */
 .navbar {
+  background-color: #e1e2e1d7;
   border-bottom: none !important;
   box-shadow: none !important;
 }
